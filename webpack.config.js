@@ -6,7 +6,7 @@ module.exports = {
     entry: './src/index.ts',
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'P5.js TypeScript',
+            title: 'Falling Sand',
         }),
     ],
     devtool: 'inline-source-map',
