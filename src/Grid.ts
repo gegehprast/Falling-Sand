@@ -28,12 +28,10 @@ class Grid {
 
             if (particle.isEmpty) {
                 this.p.fill(0)
-                this.p.rect(i * this.size, j * this.size, this.size, this.size)
-                continue
+            } else {
+                this.p.noStroke()
+                this.p.fill(this.p.hue(particle.color), this.p.saturation(particle.color), this.p.lightness(particle.color))
             }
-            
-            this.p.noStroke()
-            this.p.fill(this.p.hue(particle.color), this.p.saturation(particle.color), this.p.lightness(particle.color))
 
             this.p.rect(i * this.size, j * this.size, this.size, this.size)
         }
