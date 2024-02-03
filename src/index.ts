@@ -3,9 +3,9 @@ import Grid from './Grid'
 import Sand from './Sand'
 import { showFrameRate } from './helper'
 
-const WIDTH = 500
-const HEIGHT = 500
-const SIZE = 5
+const WIDTH = 1000
+const HEIGHT = 1000
+const SIZE = 10
 const ROWS = Math.floor(WIDTH / SIZE)
 const COLS = Math.floor(HEIGHT / SIZE)
 const ROF = 10
