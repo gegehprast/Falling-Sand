@@ -1,7 +1,11 @@
 import p5 from 'p5'
 import Particle from './Particle'
 
-const COLOR = 'hsl(40, 90%, 60%)'
+const COLOR = {
+    HUE: 40,
+    SATURATION: 90,
+    LIGHTNESS: 60,
+}
 
 class Sand extends Particle {
     constructor(p: p5) {
@@ -12,7 +16,7 @@ class Sand extends Particle {
 }
 
 function varyColor(p: p5) {
-    const color = p.color(COLOR)
+    const color = p.color(COLOR.HUE, COLOR.SATURATION, COLOR.LIGHTNESS)
 
     let hue = p.floor(p.hue(color))
 
