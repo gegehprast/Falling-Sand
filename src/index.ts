@@ -23,7 +23,6 @@ const sketch = (p: p5) => {
         p.createCanvas(WIDTH, HEIGHT)
         p.colorMode(p.HSL)
         p.background(0)
-        p.textAlign(p.CENTER, p.CENTER)
 
         grid = new Grid(p, ROWS, COLS, SIZE)
 
@@ -54,7 +53,6 @@ const sketch = (p: p5) => {
     }
 
     p.draw = () => {
-
         grid.update()
 
         grid.draw()
@@ -65,14 +63,6 @@ const sketch = (p: p5) => {
 
         // show frame rate
         showFrameRate(p)
-
-        p.fill('red')
-        p.rect(0, 40, 100, 40)
-        p.fill(255)
-        p.textSize(20)
-        const x = Math.floor(p.mouseX / grid.size)
-        const y = Math.floor(p.mouseY / grid.size)
-        p.text(`${x}, ${y}`, 50, 60)
     }
 }
 

@@ -11,9 +11,8 @@ export function showFrameRate(p: p5) {
         frameRateDisplay = p.frameRate().toFixed()
     }
 
-    p.fill('red')
-    p.rect(0, 0, 40, 40)
+    p.fill(0)
+    p.rect(0, 0, 25, 25)
     p.fill(255)
-    p.textSize(20)
-    p.text(frameRateDisplay, 20, 20)
+    p.text(frameRateDisplay, 5, 15)
 }
