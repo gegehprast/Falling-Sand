@@ -6,6 +6,7 @@ class Empty extends Particle {
         super(p)
 
         this.color = p.color(0, 0, 0)
+        this.isEmpty = true
     }
 }
 
