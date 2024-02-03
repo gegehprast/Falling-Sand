@@ -8,25 +8,37 @@ class Grid {
     rows: number
     cols: number
     grid: Particle[][]
+    updated: [number, number][] = []
 
-    constructor(p: p5, size: number, width: number, height: number) {
+    constructor(p: p5, rows: number, cols: number, size: number) {
         this.p = p
+        this.rows = rows
+        this.cols = cols
         this.size = size
-        this.rows = width / size
-        this.cols = height / size
         this.grid = makeGrid(p, this.rows, this.cols)
     }
 
-    isEmpty = (x: number, y: number) => {
-        return this.grid[x]?.[y] instanceof Empty
+    isEmpty(particle: Particle) {
+        return particle?.isEmpty
     }
 
-    set = (x: number, y: number, particle: Particle) => {
-        this.grid[x][y] = particle
-    }
+    draw = () => {
+        for (const [i, j] of this.updated) {
+            const particle = this.grid[i][j]
 
-    clear = () => {
-        this.grid = makeGrid(this.p, this.rows, this.cols)
+            if (particle.isEmpty) {
+                this.p.fill(0)
+                this.p.rect(i * this.size, j * this.size, this.size, this.size)
+                continue
+            }
+            
+            this.p.noStroke()
+            this.p.fill(this.p.hue(particle.color), this.p.saturation(particle.color), this.p.lightness(particle.color))
+
+            this.p.rect(i * this.size, j * this.size, this.size, this.size)
+        }
+
+        this.updated = []
     }
 
     swap(x1: number, y1: number, x2: number, y2: number) {
@@ -35,48 +47,56 @@ class Grid {
         this.grid[x2][y2] = temp
     }
 
-    draw = (p: p5) => {
-        for (let x = 0; x < this.rows; x++) {
-            for (let y = 0; y < this.cols; y++) {
-                p.noStroke()
-                p.fill(this.grid[x][y].color)
-                p.rect(x * this.size, y * this.size, this.size, this.size)
-            }
-        }
-    }
-
-    updateCell(x: number, y: number) {
-        const below = {x: x, y: y + 1}
-        const dir = -1
-        const belowLeft = {x: x + dir, y: y + 1}
-        const belowRight = {x: x - dir, y: y + 1}
-
-        if (this.isEmpty(below.x, below.y)) {
-            this.swap(x, y, below.x, below.y)
-        } else if (this.isEmpty(belowLeft.x, belowLeft.y)) {
-            this.swap(x, y, belowLeft.x, belowLeft.y)
-        } else if (this.isEmpty(belowRight.x, belowRight.y)) {
-            this.swap(x, y, belowRight.x, belowRight.y)
-        }
-    }
-
     update() {
-        for (let x = 0; x < this.rows; x++) {
-            for (let y = this.cols - 1; y >= 0; y--) {
-                this.updateCell(x, y)
+        // we loop by column first and we loop backwards so that
+        // later particles doesn't overwrite earlier particles
+        for (let j = this.cols - 1; j >= 0; j--) {
+            for (let i = 0; i < this.rows; i++) {
+                if (this.grid[i][j].isEmpty) {
+                    continue
+                }
+
+                const below = this.grid[i][j + 1]
+                const dir = this.p.random(1) > 0.5 ? 1 : -1
+                const belowLeft = this.grid[i - dir]?.[j + 1]
+                const belowRight = this.grid[i + dir]?.[j + 1]
+
+                if (below?.isEmpty) {
+                    this.swap(i, j, i, j + 1)
+                    
+                    this.updated.push([i, j + 1])
+                } else if (belowLeft?.isEmpty) {
+                    this.swap(i, j, i - dir, j + 1)
+
+                    this.updated.push([i - dir, j + 1])
+                } else if (belowRight?.isEmpty) {
+                    this.swap(i + dir, j + 1, i, j)
+
+                    this.updated.push([i + dir, j + 1])
+                }
+
+                this.updated.push([i, j])
             }
         }
     }
 
-    addObject(p: p5, object: Particle) {
+    addParticle(p: p5, particle: Particle) {
+        const radius = 2
+        const probability = 0.4
         const x = Math.floor(p.mouseX / this.size)
         const y = Math.floor(p.mouseY / this.size)
 
-        if (x < 0 || x >= this.rows || y < 0 || y >= this.cols) {
-            return
-        }
+        for (let i = x - radius; i <= x + radius; i++) {
+            for (let j = y - radius; j <= y + radius; j++) {
+                if (p.random(1) < probability) {
+                    if (i < 0 || i >= this.rows || j < 0 || j >= this.cols) {
+                        continue
+                    }
 
-        this.set(x, y, object)
+                    this.grid[i][j] = particle
+                }
+            }
+        }
     }
 }
 
